@@ -1,0 +1,83 @@
+#include "DHT.h"
+#define DHTPIN 2
+
+#define DHTTYPE DHT11 
+
+DHT dht(DHTPIN, DHTTYPE);
+
+String comando;
+int Contador=5;
+float M_Tem[5]; //Nomenclatura: A: arreglo; Temp= temperatura
+float M_Hum[5];
+float M_Proxi[5];
+float SumaHumedad=0;
+float SumaTemperatura=0;
+float MedHumedad=0;
+float MedTemp=0;
+int i=0;
+int  j=0;
+
+int NumA=0; // Numero de espacios en el Array.
+
+void setup () {
+  Serial.begin(9600);
+  dht.begin();
+  Serial.println("Hola, me cago en esta picha");
+
+}
+
+
+void loop () {
+Serial.println("me cago");
+  Recoleccion();
+  Imprimir();
+}
+
+
+
+
+
+void Recoleccion (){
+
+  if(i<Contador){
+    float h = dht.readHumidity();
+    float t = dht.readTemperature();
+    Serial.println(h);
+    Serial.println(t);
+
+    delay (1000);//tiempo en ms
+    //salida de humedad  
+
+    SumaTemperatura=SumaTemperatura + t;
+    SumaHumedad=SumaHumedad+ h;
+
+    i++;
+
+  }
+  else {
+    MedHumedad=(SumaHumedad)/i;
+    MedTemp=(SumaTemperatura)/i;
+    i=0;
+
+
+    if (j<Contador){
+      M_Tem[j]=MedTemp;
+      M_Hum[j]=MedHumedad;
+      j=j++;  
+    }
+    else{
+      j=0;
+    }
+
+
+  }
+}
+
+
+
+void Imprimir (){
+    Serial.println (M_Tem[i]);
+    Serial.println (M_Hum[i]);
+   
+}
+
